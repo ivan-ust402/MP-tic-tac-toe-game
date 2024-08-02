@@ -9,6 +9,7 @@ let ticTacToe = {
         ['', '', ''],
         ['', '', ''],
     ],
+    countCell: 9,
     phase: 'X',
     /**
      * Инициализация игры
@@ -124,6 +125,7 @@ let ticTacToe = {
         // Заполняем ячейку и ставим значение в массиве, в свойстве mapValues.
         this.mapValues[row][col] = this.phase;
         event.target.textContent = this.phase;
+        this.countCell -= 1
     },
 
     /**
@@ -131,7 +133,8 @@ let ticTacToe = {
      * @returns {boolean} Вернет true, если игра выиграна, иначе false.
      */
     hasWon() {
-        return this.isLineWon({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }) ||
+        return this.countCell !== 0
+            ? this.isLineWon({ x: 0, y: 0 }, { x: 1, y: 0 }, { x: 2, y: 0 }) ||
             this.isLineWon({ x: 0, y: 1 }, { x: 1, y: 1 }, { x: 2, y: 1 }) ||
             this.isLineWon({ x: 0, y: 2 }, { x: 1, y: 2 }, { x: 2, y: 2 }) ||
 
@@ -140,7 +143,8 @@ let ticTacToe = {
             this.isLineWon({ x: 2, y: 0 }, { x: 2, y: 1 }, { x: 2, y: 2 }) ||
 
             this.isLineWon({ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }) ||
-            this.isLineWon({ x: 0, y: 2 }, { x: 1, y: 1 }, { x: 2, y: 0 });
+            this.isLineWon({ x: 0, y: 2 }, { x: 1, y: 1 }, { x: 2, y: 0 })
+            : 'DRAW'
     },
 
     /**
@@ -170,8 +174,11 @@ let ticTacToe = {
         let figure = this.phase === 'X' ? 'Крестики' : 'Нолики';
         // alert(`${figure} выиграли!`);
         const message = document.querySelector('.message')
-        message.innerHTML = `<p class="message-text">Поздравляем! <br>${figure} выиграли!</p><p class="message-text">Для старта новой партии <br> перезагрузите страницу!</p>`
-        message.classList.remove('hidden')
+        console.log(this.hasWon())
+        message.innerHTML = this.hasWon() !== 'DRAW'
+            ? `<p class="message-text">Поздравляем! <br>${figure} выиграли!</p><p class="message-text">Для старта новой партии <br> перезагрузите страницу!</p>`
+            : `<p class="message-text">Партия сыграна <br> в ничью!</p><p class="message-text">Для старта новой партии <br> перезагрузите страницу!</p>`
+            message.classList.remove('hidden')
     },
 
     /**
